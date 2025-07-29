@@ -55,8 +55,8 @@ class DatasetConfig:
 
 @dataclass
 class DiffusionModelRunConfig:
-    hydra: ExperimentHydraConfig = ExperimentHydraConfig()
-    dataset: DatasetConfig = DatasetConfig()
+    hydra: ExperimentHydraConfig = field(default_factory=ExperimentHydraConfig)
+    dataset: DatasetConfig = field(default_factory=DatasetConfig)
     device: str = "cuda"
     checkpoint_path: str = "${hydra:runtime.cwd}/jacob_dataformat_image_propreo.pt"
 
