@@ -67,17 +67,17 @@ def get_data_stats(data):
     return stats
 
 
-def normalize_data(data, stats):
+def normalize_data(data, stats, eps=1e-8):
     # nomalize to [0,1]
-    ndata = (data - stats['min']) / (stats['max'] - stats['min'])
+    ndata = (data - stats['min'] + eps/2) / (stats['max'] - stats['min'] + eps)
     # normalize to [-1, 1]
     ndata = ndata * 2 - 1
     return ndata
 
 
-def unnormalize_data(ndata, stats):
+def unnormalize_data(ndata, stats, eps=1e-8):
     ndata = (ndata + 1) / 2
-    data = ndata * (stats['max'] - stats['min']) + stats['min']
+    data = ndata * (stats['max'] - stats['min'] + eps) + stats['min'] - eps/2
     return data
 
 
