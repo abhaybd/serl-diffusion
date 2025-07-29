@@ -13,7 +13,13 @@ def instantiate_model_artifacts(cfg: DiffusionModelRunConfig, model_only: bool =
     If model only, returns network and scheduler and device only
     If not model only, returns network, ema, noise scheduler, optimizer, lr_scheduler, dataloader, stats, device
     '''
-    device = torch.device('cuda')
+    device = torch.device(cfg.device)
+    if device.type == 'cuda' and (not torch.cuda.is_available() or (device.index is not None and device.index >= torch.cuda.device_count())):
+        print("WARN: CUDA device not available or index out of range. Using CPU.")
+        device = torch.device('cpu')
+    elif device.type == 'mps' and not torch.backends.mps.is_available():
+        print("WARN: MPS device not available. Using CPU.")
+        device = torch.device('cpu')
 
     noise_scheduler = DDPMScheduler(
         num_train_timesteps=cfg.num_diffusion_iters,
@@ -106,7 +112,7 @@ def instantiate_model_artifacts(cfg: DiffusionModelRunConfig, model_only: bool =
         num_workers=4,
         shuffle=True,
         # accelerate cpu-gpu transfer
-        pin_memory=True,
+        pin_memory=device.type == 'cuda',
         # don't kill worker process after each epoch
         persistent_workers=True
     )
