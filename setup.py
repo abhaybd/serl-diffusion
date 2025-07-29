@@ -12,6 +12,7 @@ setup(
         "h5py",
         "matplotlib",
         "numpy",
-        "imageio[ffmpeg]"
+        "imageio[ffmpeg]",
+        "opencv-python",
     ]
 )
