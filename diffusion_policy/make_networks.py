@@ -5,9 +5,8 @@ from diffusers import DDPMScheduler, EMAModel, get_scheduler
 from diffusion_policy.dataset import SERLImageDataset, HD5PYDataset, JacobPickleDataset, D4RLDataset
 from diffusion_policy.networks import get_resnet, replace_bn_with_gn
 from diffusion_policy.configs import DiffusionModelRunConfig
-from typing import Any
 
-def instantiate_model_artifacts(cfg: DiffusionModelRunConfig, model_only: bool = False, noise_pred_kwargs: dict[str, Any] | None = None):
+def instantiate_model_artifacts(cfg: DiffusionModelRunConfig, model_only: bool = False):
     '''
     Instantiate the model and the training objects.
     If model only, returns network and scheduler and device only
@@ -45,7 +44,7 @@ def instantiate_model_artifacts(cfg: DiffusionModelRunConfig, model_only: bool =
     noise_pred_net = ConditionalUnet1D(
         input_dim=cfg.action_dim,
         global_cond_dim=obs_dim * cfg.obs_horizon,
-        **(noise_pred_kwargs or {})
+        **cfg.noise_pred_net
     )
 
     # the final arch has 2 parts
