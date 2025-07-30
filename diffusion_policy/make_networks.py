@@ -15,11 +15,13 @@ def instantiate_model_artifacts(cfg: DiffusionModelRunConfig, model_only: bool =
     '''
     device = torch.device(cfg.device)
     if device.type == 'cuda' and (not torch.cuda.is_available() or (device.index is not None and device.index >= torch.cuda.device_count())):
-        print("WARN: CUDA device not available or index out of range. Using CPU.")
-        device = torch.device('cpu')
+        fallback_device = "mps" if torch.backends.mps.is_available() else "cpu"
+        print(f"WARN: CUDA device not available or index out of range. Using {fallback_device.upper()}.")
+        device = torch.device(fallback_device)
     elif device.type == 'mps' and not torch.backends.mps.is_available():
-        print("WARN: MPS device not available. Using CPU.")
-        device = torch.device('cpu')
+        fallback_device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"WARN: MPS device not available. Using {fallback_device.upper()}.")
+        device = torch.device(fallback_device)
 
     noise_scheduler = DDPMScheduler(
         num_train_timesteps=cfg.num_diffusion_iters,
