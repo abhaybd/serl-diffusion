@@ -29,7 +29,7 @@ class DiffusionPolicy(object):
 
     @staticmethod
     def load(chkpt_path: str, map_location: str = 'cpu'):
-        checkpoint = torch.load(chkpt_path, map_location=map_location)
+        checkpoint = torch.load(chkpt_path, map_location=map_location, weights_only=False)
         diff_run_config: DiffusionModelRunConfig = checkpoint['config']
 
         nets, noise_scheduler, device = instantiate_model_artifacts(
