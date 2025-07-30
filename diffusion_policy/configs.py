@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict
+from typing import Dict, Any
 
 import hydra
 from hydra.conf import HydraConf
@@ -78,7 +78,7 @@ class DiffusionModelRunConfig:
     num_diffusion_iters: int = 100
     num_eval_diffusion_iters: int = 100
 
-
+    noise_pred_net: dict[str, Any] = field(default_factory=lambda: {})
 
 
 
